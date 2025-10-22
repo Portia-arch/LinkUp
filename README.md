@@ -1,3 +1,6 @@
+# LinkUp
+A React Native app for community events where users can create events, browse and RSVP, and sign in with email or social logins
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
