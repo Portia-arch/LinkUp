@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, Button, FlatList, ActivityIndicator, Share } from 'react-native';
-import { useAuth } from '../App';
+import { useAuth } from '../app';
 import EventCard from '../components/EventCard';
 import eventsMock from '../mock/events.json';
 

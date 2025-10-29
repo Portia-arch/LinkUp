@@ -4,13 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// Import firebase auth instance if you wired it
-// import { auth } from './config/firebase';
-
+// Import screens as default exports
 import AuthScreen from './screens/AuthScreen';
 import EventListScreen from './screens/EventListScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
-import Dashboard from './screens/Dashboard';
+import DashboardScreen from './screens/DashboardScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
 // Mock events are used by default; created events are stored in state+AsyncStorage
@@ -21,8 +19,13 @@ LogBox.ignoreAllLogs(true); // optional: hide yellow-box logs during development
 const Stack = createNativeStackNavigator();
 const AuthContext = createContext();
 
+// Move this AFTER creating AuthContext
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }
 
 export default function App() {
@@ -35,8 +38,15 @@ export default function App() {
     (async () => {
       try {
         const rawUser = await AsyncStorage.getItem('linkup_user');
-        if (rawUser) setUser(JSON.parse(rawUser));
-
+        if (rawUser) {
+          const parsed = JSON.parse(rawUser);
+          // Convert string booleans to actual booleans
+          if (typeof parsed.isVerified === 'string') {
+            parsed.isVerified = parsed.isVerified === 'true';
+          }
+          setUser(parsed);
+        }
+        
         const rawRsvps = await AsyncStorage.getItem('linkup_rsvps');
         if (rawRsvps) setRsvps(JSON.parse(rawRsvps));
 
@@ -168,7 +178,7 @@ export default function App() {
             <>
               <Stack.Screen name="Events" component={EventListScreen} />
               <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
-              <Stack.Screen name="Dashboard" component={Dashboard} />
+              <Stack.Screen name="Dashboard" component={DashboardScreen} />
               <Stack.Screen name="Profile" component={ProfileScreen} />
             </>
           ) : (

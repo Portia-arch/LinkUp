@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, Button, View } from 'react-native';
-import { useAuth } from '../App';
+import { useAuth } from '../app';
 
 export default function CreateEventScreen({ navigation }) {
   const [name, setName] = useState('');

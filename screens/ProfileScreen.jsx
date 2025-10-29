@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, Text, Image, Button } from 'react-native';
-import { useAuth } from '../App';
+import { useAuth } from '../app';
 
 export default function ProfileScreen({ navigation }) {
   const { user } = useAuth();
