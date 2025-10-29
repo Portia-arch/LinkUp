@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, Button, FlatList, ActivityIndicator, Share } from 'react-native';
-import { useAuth } from '../app';
-import EventCard from '../components/EventCard';
-import eventsMock from '../mock/events.json';
+import { useAuth } from '../auth';
+import EventCard from '../../components/EventCard';
+import eventsMock from '../../mock/events.json';
 
 export default function EventListScreen({ navigation }) {
   const { rsvps, toggleRSVP } = useAuth();
@@ -16,7 +16,9 @@ export default function EventListScreen({ navigation }) {
 
   async function handleShare(event) {
     try {
-      await Share.share({ message: `Join me at ${event.name} on ${event.date}! ${event.description}` });
+      await Share.share({
+        message: `Join me at ${event.name} on ${event.date}! ${event.description}`
+      });
     } catch (e) {
       console.warn(e);
     }
@@ -34,9 +36,18 @@ export default function EventListScreen({ navigation }) {
           <Button title="Profile" onPress={() => navigation.navigate('Profile')} />
         </View>
       </View>
-      <FlatList data={events} keyExtractor={(i) => i.id.toString()} renderItem={({ item }) => (
-        <EventCard item={item} onRSVP={toggleRSVP} onShare={handleShare} joined={rsvps.includes(item.id)} />
-      )} />
+      <FlatList
+        data={events}
+        keyExtractor={(i) => i.id.toString()}
+        renderItem={({ item }) => (
+          <EventCard
+            item={item}
+            onRSVP={toggleRSVP}
+            onShare={handleShare}
+            joined={rsvps.includes(item.id)}
+          />
+        )}
+      />
     </SafeAreaView>
   );
 }
