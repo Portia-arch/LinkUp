@@ -1,0 +1,26 @@
+{
+  "name": "linkup",
+  "version": "1.0.0",
+  "description": "A React Native app for community events where users can create events, browse and RSVP, and sign in with email or social logins",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Portia-arch/LinkUp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Portia-arch/LinkUp/issues"
+  },
+  "homepage": "https://github.com/Portia-arch/LinkUp#readme",
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "expo-router": "^6.0.14",
+    "expo-splash-screen": "~31.0.10"
+  }
+}

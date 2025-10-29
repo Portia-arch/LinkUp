@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,7 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthScreen from './screens/AuthScreen';
 import EventListScreen from './screens/EventListScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
-import DashboardScreen from './screens/DashboardScreen';
+import Dashboard from './screens/Dashboard';
 import ProfileScreen from './screens/ProfileScreen';
 
 // Mock events are used by default; created events are stored in state+AsyncStorage
@@ -169,7 +168,7 @@ export default function App() {
             <>
               <Stack.Screen name="Events" component={EventListScreen} />
               <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
-              <Stack.Screen name="Dashboard" component={DashboardScreen} />
+              <Stack.Screen name="Dashboard" component={Dashboard} />
               <Stack.Screen name="Profile" component={ProfileScreen} />
             </>
           ) : (

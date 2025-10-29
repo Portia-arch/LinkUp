@@ -1,8 +1,8 @@
 import React from 'react';
 import { SafeAreaView, Text, FlatList, View, Button } from 'react-native';
-import { useAuth } from '../App';
+import { useAuth } from '../app';
 
-export default function DashboardScreen() {
+export default function Dashboard() {
   const { eventsCreated, rsvpEvents, signOut } = useAuth();
 
   return (
