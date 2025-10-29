@@ -1,53 +1,167 @@
 # LinkUp
-A React Native app for community events where users can create events, browse and RSVP, and sign in with email or social logins
+A simple React Native mobile app for user-created community events, allowing users to register, RSVP, and view events. The app includes authentication (email/password + Google + Facebook), event creation, a user dashboard, and profile management.
 
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Features
 
-## Get started
+## User Authentication:
 
-1. Install dependencies
+Email/password login and registration
+Google Sign-In
+Facebook Sign-In
 
-   ```bash
-   npm install
-   ```
+## User Profile:
 
-2. Start the app
+Display name, avatar/photo, email
+Logout functionality
 
-   ```bash
-   npx expo start
-   ```
+## Events:
 
-In the output, you'll find options to open the app in a
+View list of upcoming events (mock API)
+Create new events with name, description, and date
+RSVP to events
+Dashboard with registered events
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Navigation:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Stack navigation between screens (React Navigation)
 
-## Get a fresh project
+## UI/UX:
 
-When you're ready, run:
+Modular and responsive design
+Clear and intuitive interface
 
-```bash
-npm run reset-project
+
+## Tech Stack
+
+React Native – Mobile development framework
+Firebase Authentication – Email/password and social login
+Expo – React Native toolchain for easier development
+React Navigation – Screen navigation
+JavaScript / JSX – Component-based UI
+Expo Auth Session – Social login OAuth integration
+
+
+## Setup & Installation
+
+1. Clone the repository:
+
+git clone https://github.com/Portia-arch/LinkUp.git
+cd LinkUp
+
+
+2. Install dependencies:
+
+npm install
+# or
+yarn install
+
+
+3. Install Expo dependencies:
+
+ ``` bash
+expo install expo-auth-session expo-google-auth-session expo-facebook firebase react-native-screens react-native-safe-area-context @react-navigation/native @react-navigation/native-stack 
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Learn more
+4. Start the app:
 
-To learn more about developing your project with Expo, look at the following resources:
+``` bash
+expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Use an emulator or Expo Go app on your device.
 
-## Join the community
+Firebase Configuration
 
-Join our community of developers creating universal apps.
+1. Create a Firebase project at https://console.firebase.google.com
+2. Enable Authentication → Sign-in Methods:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Email/Password
+Google
+Facebook
+
+3. Copy your Firebase config to firebase.js:
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+};
+
+## Social Login Setup
+
+ Google Sign-In
+
+1. Enable Google Sign-In in Firebase
+2. Add Web client ID to GoogleSignInButton.jsx
+3. For iOS: add reservedClientId in app.json
+
+ Facebook Sign-In
+
+1. Create a Facebook App at https://developers.facebook.com
+2. Enable Facebook login in Firebase
+3. Add App ID to FacebookSignInButton.jsx
+4. Make sure OAuth redirect URI matches Firebase’s instructions
+
+
+## Project Architecture
+
+App.jsx – Entry point, wraps AppNavigator with AuthProvider
+AuthContext.jsx – Provides user authentication state
+Screens – Divided by feature:
+Auth/ – Login, Register, Profile
+Events/ – Event List, Event Create, Event Detail
+Dashboard/ – User dashboard
+Components – Reusable UI elements (EventCard, Social Buttons)
+API – Mock API calls (can replace with real API)
+
+
+## Usage
+
+Login via email/password, Google, or Facebook
+View upcoming events
+Create a new event
+RSVP to events and view registered events in dashboard
+Update profile and logout
+
+
+## Future Improvements
+
+Integrate real backend API (e.g., Eventbrite)
+
+Add push notifications for upcoming events
+
+Add location/map support for events
+
+Enable sharing events with friends
+
+Implement persistent storage for offline access
+
+
+## File Structure
+
+````` bash
+LINKUP/
+├── App.jsx
+├── firebase.js
+├── src/
+│   ├── api/events.jsx
+│   ├── components/
+│   │   ├── EventCard.jsx
+│   │   ├── GoogleSignInButton.jsx
+│   │   └── FacebookSignInButton.jsx
+│   ├── context/AuthContext.jsx
+│   ├── navigation/AppNavigator.jsx
+│   ├── screens/
+│   │   ├── Auth/LoginScreen.jsx
+│   │   ├── Auth/RegisterScreen.jsx
+│   │   ├── Auth/ProfileScreen.jsx
+│   │   ├── Events/EventListScreen.jsx
+│   │   ├── Events/EventCreateScreen.jsx
+│   │   └── Events/EventDetailScreen.jsx
+│   │   └── Dashboard/DashboardScreen.jsx 
+```

@@ -1,37 +1,27 @@
 import React from 'react';
-import { SafeAreaView, Text, FlatList, View, Button } from 'react-native';
-import { useAuth } from '../auth';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import EventCard from '../components/EventCard';
+
+// Mock registered events
+const registeredEvents = [
+  { id: 1, name: 'Community Meetup', date: '2025-11-05' },
+  { id: 2, name: 'Charity Run', date: '2025-11-10' },
+];
 
 export default function DashboardScreen() {
-  const { eventsCreated, rsvpEvents, signOut } = useAuth();
-
   return (
-    <SafeAreaView style={{ flex: 1, padding: 12 }}>
-      <Text style={{ fontSize: 18 }}>Your Dashboard</Text>
-      <Text style={{ marginTop: 8 }}>Events you joined:</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>My Registered Events</Text>
       <FlatList
-        data={rsvpEvents}
-        keyExtractor={(i) => i.id.toString()}
-        renderItem={({ item }) => (
-          <View style={{ padding: 8, borderBottomWidth: 1 }}>
-            <Text>{item.name} — {item.date}</Text>
-          </View>
-        )}
+        data={registeredEvents}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <EventCard event={item} />}
       />
-      <View style={{ height: 12 }} />
-      <Text style={{ marginTop: 8 }}>Events you created:</Text>
-      <FlatList
-        data={eventsCreated}
-        keyExtractor={(i) => i.id.toString()}
-        renderItem={({ item }) => (
-          <View style={{ padding: 8, borderBottomWidth: 1 }}>
-            <Text>{item.name} — {item.date}</Text>
-          </View>
-        )}
-      />
-      <View style={{ marginTop: 16 }}>
-        <Button title="Sign out" onPress={() => signOut()} />
-      </View>
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  title: { fontSize: 24, marginBottom: 16, textAlign: 'center' },
+});
