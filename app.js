@@ -136,7 +136,7 @@ export default function App() {
 
   const addEvent = async (payload) => {
     // payload: { name, description, date }
-    const newEvent = { ...payload, id: Date.now() }; // simple unique id
+    const newEvent = { ...payload, id: Date.now() };
     setEventsCreated((prev) => {
       const next = [newEvent, ...prev];
       persistCreated(next).catch((e) => console.warn(e));
