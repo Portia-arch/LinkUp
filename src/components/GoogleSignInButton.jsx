@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Button, Alert } from 'react-native';
-import * as Google from 'expo-google-auth-session';
-import { firebaseAuth } from '../../firebase';
+import * as Google from 'expo-auth-session/providers/google';
+import { firebaseAuth } from '../../config/firebase';
 import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
 import { AuthContext } from '../context/AuthContext.jsx';
 

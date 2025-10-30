@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet, Image } from 'react-native';
 import { AuthContext } from '../../context/AuthContext';
 import { signOut } from 'firebase/auth';
-import { firebaseAuth } from '../../../firebase';
+import { firebaseAuth } from '../../../config/firebase';
 
 export default function ProfileScreen() {
   const { user, setUser } = useContext(AuthContext);

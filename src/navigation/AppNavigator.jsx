@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from '../screens/Auth/LoginScreen.jsx';
-import RegisterScreen from '../screens/Auth/RegisterScreen.jsx';
-import ProfileScreen from '../screens/Auth/ProfileScreen.jsx';
-import EventListScreen from '../screens/Events/EventListScreen.jsx';
-import EventCreateScreen from '../screens/Events/EventCreateScreen.jsx';
-import DashboardScreen from '../screens/Dashboard/DashboardScreen.jsx';
-import { AuthContext } from '../context/AuthContext.jsx';
+import LoginScreen from '../screens/Auth/LoginScreen';
+import RegisterScreen from '../screens/Auth/RegisterScreen';
+import ProfileScreen from '../screens/Auth/ProfileScreen';
+import EventListScreen from '../screens/Events/EventListScreen';
+import CreateEventScreen from '../screens/Events/CreateEventScreen';
+import DashboardScreen from '../screens/Dashboard/DashboardScreen';
+import { AuthContext } from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +18,7 @@ export default function AppNavigator() {
       {user ? (
         <>
           <Stack.Screen name="Events" component={EventListScreen} />
-          <Stack.Screen name="CreateEvent" component={EventCreateScreen} />
+          <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
         </>

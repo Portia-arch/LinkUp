@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { firebaseAuth } from '../../../firebase';
+import { firebaseAuth } from '../../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { AuthContext } from '../../context/AuthContext.jsx';
-import GoogleSignInButton from '../../components/GoogleSignInButton.jsx';
-import FacebookSignInButton from '../../components/FacebookSignInButton.jsx';
+import { AuthContext } from '../../context/AuthContext';
+import GoogleSignInButton from '../../components/GoogleSignInButton';
+import FacebookSignInButton from '../../components/FacebookSignInButton';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');

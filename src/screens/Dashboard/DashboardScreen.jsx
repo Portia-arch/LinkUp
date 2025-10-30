@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import EventCard from '../components/EventCard';
+import EventCard from '../../components/EventCard';
 
 // Mock registered events
 const registeredEvents = [

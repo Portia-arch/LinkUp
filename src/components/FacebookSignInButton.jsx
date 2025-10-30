@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { Button, Alert } from 'react-native';
 import * as Facebook from 'expo-auth-session/providers/facebook';
-import { firebaseAuth } from '../../firebase';
+import { firebaseAuth } from '../../config/firebase';
 import { FacebookAuthProvider, signInWithCredential } from 'firebase/auth';
-import { AuthContext } from '../context/AuthContext.jsx';
+import { AuthContext } from '../context/AuthContext';
 
 export default function FacebookSignInButton() {
   const { setUser } = useContext(AuthContext);
