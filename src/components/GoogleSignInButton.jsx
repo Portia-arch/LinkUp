@@ -1,34 +1,60 @@
-import React, { useContext } from 'react';
-import { Button, Alert } from 'react-native';
+import React, { useEffect, useContext } from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { firebaseAuth } from '../../config/firebase';
 import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-import { AuthContext } from '../context/AuthContext.jsx';
+import { firebaseAuth } from '../../config/firebase';
+import { AuthContext } from '../context/AuthContext';
+import { AntDesign } from '@expo/vector-icons';
 
-const CLIENT_ID = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
+WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleSignInButton() {
   const { setUser } = useContext(AuthContext);
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const result = await Google.startAsync({
-        clientId: CLIENT_ID,
-        scopes: ['profile', 'email'],
-      });
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com',
+    iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
+    webClientId: '605771402121-8irmonot0i5gn2qjrq46k0hih3njrs1q.apps.googleusercontent.com',
+    scopes: ['profile', 'email'],
+  });
 
-      if (result.type === 'success') {
-        const { idToken, accessToken } = result.params;
-        const credential = GoogleAuthProvider.credential(idToken, accessToken);
-        const userCredential = await signInWithCredential(firebaseAuth, credential);
-        setUser(userCredential.user);
-      } else {
-        Alert.alert('Google Sign-In cancelled');
-      }
-    } catch (error) {
-      Alert.alert('Google Sign-In Error', error.message);
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+
+      const credential = GoogleAuthProvider.credential(id_token);
+      signInWithCredential(firebaseAuth, credential)
+        .then((userCredential) => {
+          setUser(userCredential.user);
+          console.log('Google login success', userCredential.user);
+        })
+        .catch((err) => console.error('Firebase login error:', err));
     }
-  };
+  }, [response]);
 
-  return <Button title="Sign in with Google" onPress={handleGoogleSignIn} />;
+  return (
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => promptAsync()}
+      disabled={!request}
+    >
+      <AntDesign name="google" size={24} color="white" style={{ marginRight: 10 }} />
+      <Text style={styles.text}>Sign in with Google</Text>
+    </TouchableOpacity>
+  );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    flexDirection: 'row',
+    backgroundColor: '#DB4437',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  text: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+});

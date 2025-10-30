@@ -9,7 +9,7 @@
       "web"
     ],
     "extra": {
-      "googleClientId": "YOUR_GOOGLE_WEB_CLIENT_ID"
+      "googleClientId": "214948578936-esj37phdkpmk3dcetg23vhcb8ipggs2o.apps.googleusercontent.com"
     },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -47,7 +47,8 @@
           }
         }
       ],
-      "expo-facebook"
+      "expo-facebook",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

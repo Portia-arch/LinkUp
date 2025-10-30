@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import { Button, Alert } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert, View } from 'react-native';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import { firebaseAuth } from '../../config/firebase';
+import { FontAwesome } from '@expo/vector-icons';
 import { FacebookAuthProvider, signInWithCredential } from 'firebase/auth';
 import { AuthContext } from '../context/AuthContext';
 
@@ -22,5 +23,27 @@ export default function FacebookSignInButton() {
     }
   }, [response]);
 
-  return <Button title="Sign in with Facebook" onPress={() => promptAsync()} />;
+  return (
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => promptAsync()}
+      disabled={!request}
+    >
+      <FontAwesome name="facebook" size={24} color="white" style={{ marginRight: 10 }} />
+      <Text style={styles.text}>Sign in with Facebook</Text>
+    </TouchableOpacity>
+  );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    flexDirection: 'row',
+    backgroundColor: '#1877F2', 
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  text: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+});
