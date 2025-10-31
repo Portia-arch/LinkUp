@@ -1,35 +1,45 @@
 import React from 'react';
-import { SafeAreaView, View, Image, StyleSheet, Platform } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Header() {
+export default function AppHeader() {
+  const navigation = useNavigation();
+
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
+    <View style={styles.header}>
+      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
         <Image
-          source={require('../../assets/images/linkup-logo.png')} 
+          source={require('../../assets/images/linkup-logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
-      </View>
-    </SafeAreaView>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    backgroundColor: '#fff',
-  },
-  container: {
-    height: 56,
-    paddingHorizontal: 16,
+  header: {
+    width: '100%',
+    paddingTop: 40,
+    paddingBottom: 10,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#eee',
-    paddingTop: Platform.OS === 'ios' ? 6 : 0,
+    backgroundColor: '#fff',
+
+     flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 45, // space for status bar
+    paddingBottom: 10,
+    backgroundColor: '#fff',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   logo: {
-    width: 540,
-    height: 36,
+    width: 90,
+    height: 90,
   },
 });
