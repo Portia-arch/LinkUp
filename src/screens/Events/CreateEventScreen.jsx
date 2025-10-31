@@ -1,36 +1,109 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-export default function EventCreateScreen({ navigation }) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+export default function CreateEventScreen({ navigation }) {
+  const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
+  const [description, setDescription] = useState('');
 
-  const handleCreate = () => {
-    if (!name || !description || !date) return Alert.alert('Error', 'All fields are required');
-    // Add API call to save event here
-    Alert.alert('Success', 'Event Created');
-    navigation.goBack();
+  const handleSubmit = () => {
+    if (!title || !date || !description) {
+      Alert.alert('Please fill in all fields');
+      return;
+    }
+    // Save event logic here (e.g. Firestore)
+    Alert.alert('Event created successfully!');
+    navigation.navigate('Events');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create Event</Text>
-      <TextInput placeholder="Event Name" value={name} onChangeText={setName} style={styles.input} />
-      <TextInput
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        style={styles.input}
-      />
-      <TextInput placeholder="Date (YYYY-MM-DD)" value={date} onChangeText={setDate} style={styles.input} />
-      <Button title="Create" onPress={handleCreate} />
+      <Text style={styles.header}>Create New Event</Text>
+
+      <View style={styles.formCard}>
+        <Text style={styles.label}>Event Title</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter event title"
+          value={title}
+          onChangeText={setTitle}
+        />
+
+        <Text style={styles.label}>Date</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="YYYY-MM-DD"
+          value={date}
+          onChangeText={setDate}
+        />
+
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          multiline
+          numberOfLines={4}
+          placeholder="Describe your event..."
+          value={description}
+          onChangeText={setDescription}
+        />
+
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitText}>Create Event</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 24, marginBottom: 16, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 12, borderRadius: 5 },
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F7FA',
+    padding: 20,
+  },
+  header: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 20,
+  },
+  formCard: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 10,
+    color: '#333',
+  },
+  input: {
+    backgroundColor: '#F2F2F7',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 6,
+    fontSize: 16,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  submitButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  submitText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
 });

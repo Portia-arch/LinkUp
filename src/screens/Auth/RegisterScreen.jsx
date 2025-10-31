@@ -1,73 +1,123 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { firebaseAuth } from '../../../config/firebase';
 import { AuthContext } from '../../context/AuthContext.jsx';
 
 export default function RegisterScreen({ navigation }) {
-  const { setUser } = useContext(AuthContext);
+  const [name, setName] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const { setUser } = useContext(AuthContext);
 
   const handleRegister = async () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
+
       setUser(userCredential.user);
-      Alert.alert('✅ Registration successful');
-      navigation.navigate('Home');
     } catch (error) {
-      console.error('Registration error:', error);
-      Alert.alert('Registration failed', error.message);
+      Alert.alert('Registration Error', error.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
-      <TextInput
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        secureTextEntry
-      />
-      <Button title="Register" onPress={handleRegister} />
-      <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
-        Already have an account? Login
-      </Text>
+      <Text style={styles.title}>Create Account 📝</Text>
+
+      <View style={styles.formContainer}>
+        <Text>Full Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Full Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <Text>Email</Text>
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <Text>Password</Text>
+        <TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          secureTextEntry
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          accessibilityRole="link"
+          onPress={() => {
+            // use replace to avoid stacking auth screens
+            if (navigation?.replace) navigation.replace('LogIn');
+            else navigation?.navigate?.('LogIn');
+          }}
+        >
+          <Text style={styles.link}>
+            Already have an account? <Text style={styles.linkText}>Login</Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  title: { fontSize: 24, textAlign: 'center', marginBottom: 20 },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center', 
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 20,
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: 350,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    marginBottom: 30,
+    color: '#333',
+  },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#28a745',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
   link: {
-    color: '#007BFF',
     textAlign: 'center',
     marginTop: 15,
+    color: '#555',
+  },
+  linkText: {
+    color: '#28a745',
+    fontWeight: '600',
   },
 });
