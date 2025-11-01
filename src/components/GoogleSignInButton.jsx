@@ -76,8 +76,10 @@ export default function GoogleSignInButton() {
 
   // 👇 replace with your Web client ID (NOT iOS or Android)
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: '214948578936-m24id4bh0oqe7nv5l8euh0j09h6j29hd.apps.googleusercontent.com',
-    webClientId: '214948578936-m24id4bh0oqe7nv5l8euh0j09h6j29hd.apps.googleusercontent.com',
+    expoClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
+    webClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
+    iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
+  androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
   });
 
   useEffect(() => {
