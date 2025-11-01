@@ -11,7 +11,6 @@ export default function CreateEventScreen({ navigation }) {
       Alert.alert('Please fill in all fields');
       return;
     }
-    // Save event logic here (e.g. Firestore)
     Alert.alert('Event created successfully!');
     navigation.navigate('Events');
   };

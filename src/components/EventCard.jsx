@@ -1,29 +1,42 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+// EventCard.js
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../context/AuthContext';
 
 export default function EventCard({ event }) {
-  const handleRSVP = () => {
-    // Add RSVP logic here
-    alert(`RSVP for ${event.name}`);
-  };
+  const navigation = useNavigation();
+  const { user } = useContext(AuthContext);
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate('EventDetail', { event })}
+    >
       <Text style={styles.name}>{event.name}</Text>
-      {event.description ? <Text>{event.description}</Text> : null}
-      <Text>{event.date}</Text>
-      <Button title="RSVP" onPress={handleRSVP} />
-    </View>
+      <Text style={styles.date}>
+        {event.date ? new Date(event.date).toLocaleString() : 'No date'}
+      </Text>
+      <Text style={styles.description} numberOfLines={2}>
+        {event.description || 'No description available.'}
+      </Text>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
-  name: { fontSize: 18, fontWeight: 'bold' },
+  name: { fontSize: 18, fontWeight: '600', color: '#333' },
+  date: { fontSize: 14, color: '#777', marginVertical: 5 },
+  description: { fontSize: 14, color: '#555' },
 });

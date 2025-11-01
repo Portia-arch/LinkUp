@@ -24,6 +24,7 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.title}>Let's LinkUp👋</Text>
 
       <View style={styles.formContainer}>
+        <Text>Email</Text>
         <TextInput
           placeholder="Email"
           value={email}
@@ -32,6 +33,7 @@ export default function LoginScreen({ navigation }) {
           keyboardType="email-address"
           autoCapitalize="none"
         />
+        <Text>Password</Text>
         <TextInput
           placeholder="Password"
           value={password}
@@ -60,8 +62,8 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 20,
   },

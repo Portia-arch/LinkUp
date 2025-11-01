@@ -5,18 +5,18 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthContext } from '../context/AuthContext';
 import Header from '../components/Header';
 
-// Screens
 import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import EventListScreen from '../screens/Events/EventListScreen';
 import CreateEventScreen from '../screens/Events/CreateEventScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import ProfileScreen from '../screens/Auth/ProfileScreen';
+import EventDetailScreen from '../screens/Events/EventDetailScreen';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// 👇 Bottom Tabs (only shown after login)
 function MainTabs() {
   return (
     <Tab.Navigator
@@ -49,13 +49,14 @@ function MainTabs() {
     >
       <Tab.Screen name="Events" component={EventListScreen} />
       <Tab.Screen name="CreateEvent" component={CreateEventScreen} />
+            <Tab.Screen name="EventDetail" component={EventDetailScreen} />
+
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
 
-// 👇 Root navigation logic
 export default function AppNavigator() {
   const { user } = useContext(AuthContext);
 
