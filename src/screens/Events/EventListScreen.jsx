@@ -10,18 +10,23 @@ import {
   Alert,
   Linking,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
 
 const SERPAPI_KEY = 'ff44039cc4dd30d4326b9274714eed7d9f9f18f689f9e8f4eda6770003752e0b';
 
 export default function EventListScreen() {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('Johannesburg');
 
-  const fetchEvents = async () => {
+  const cities = ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Gqeberha'];
+
+  const fetchEvents = async (city) => {
+    setLoading(true);
     try {
-      const location = 'Gauteng, South Africa';
       const query = `https://serpapi.com/search.json?engine=google_events&q=events+in+${encodeURIComponent(
-        location
+        city + ', South Africa'
       )}&api_key=${SERPAPI_KEY}`;
 
       const response = await fetch(query);
@@ -41,17 +46,8 @@ export default function EventListScreen() {
   };
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={{ marginTop: 10 }}>Loading events...</Text>
-      </View>
-    );
-  }
+    fetchEvents(selectedCity);
+  }, [selectedCity]);
 
   const handleRSVP = (url) => {
     if (url) Linking.openURL(url);
@@ -60,47 +56,73 @@ export default function EventListScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Upcoming Events</Text>
-      {events.length === 0 ? (
+      <Text style={styles.title}>Events in {selectedCity}</Text>
+
+      {/* City Selector */}
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedCity}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedCity(itemValue)}
+        >
+          {cities.map((city) => (
+            <Picker.Item key={city} label={city} value={city} />
+          ))}
+        </Picker>
+      </View>
+
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007bff" />
+          <Text style={{ marginTop: 10 }}>Loading events...</Text>
+        </View>
+      ) : events.length === 0 ? (
         <Text style={styles.noEventsText}>No events found.</Text>
       ) : (
         <FlatList
           data={events}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.eventCard}>
-              {item.image ? (
-                <Image source={{ uri: item.image }} style={styles.image} />
-              ) : (
-                <View style={[styles.image, styles.noImage]}>
-                  <Text style={{ color: '#888' }}>No Image</Text>
-                </View>
-              )}
+          renderItem={({ item }) => {
 
-              <Text style={styles.name}>{item.title}</Text>
+            const eventDate =
+              item.date?.start_date
+                ? new Date(item.date.start_date).toLocaleDateString()
+                : item.date?.when || 'Date not available';
 
-              <Text style={styles.date}>
-                {item.date_start
-                  ? new Date(item.date_start).toLocaleString()
-                  : 'No date available'}
-              </Text>
+            const imageUri = item.thumbnail || item.image?.url || null;
 
-              <Text style={styles.venue}>
-                {item.location || 'Venue not specified'}
-              </Text>
+            return (
+              <View style={styles.eventCard}>
+                {imageUri ? (
+                  <Image source={{ uri: imageUri }} style={styles.image} />
+                ) : (
+                  <View style={[styles.image, styles.noImage]}>
+                    <Text style={{ color: '#888' }}>No Image</Text>
+                  </View>
+                )}
 
-              <Text style={styles.description} numberOfLines={3}>
-                {item.description || 'No description available.'}
-              </Text>
+                <Text style={styles.name}>{item.title}</Text>
 
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => handleRSVP(item.link)}
-              >
-                <Text style={styles.buttonText}>RSVP / View</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+                <Text style={styles.date}>{eventDate}</Text>
+
+
+                <Text style={styles.venue}>
+                  {item.address || item.location || 'Venue not specified'}
+                </Text>
+
+                <Text style={styles.description} numberOfLines={3}>
+                  {item.description || 'No description available.'}
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleRSVP(item.link)}
+                >
+                  <Text style={styles.buttonText}>RSVP / View</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          }}
         />
       )}
     </View>
@@ -109,7 +131,20 @@ export default function EventListScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#f7f7f7' },
-  title: { fontSize: 22, fontWeight: '700', marginBottom: 15, textAlign: 'center' },
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+  picker: { height: 50, width: '100%' },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   noEventsText: { textAlign: 'center', color: '#888', fontSize: 16 },
   eventCard: {
