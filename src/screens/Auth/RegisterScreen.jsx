@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
 import { firebaseAuth } from '../../../config/firebase';
 import { AuthContext } from '../../context/AuthContext.jsx';
 
@@ -59,7 +59,6 @@ export default function RegisterScreen({ navigation }) {
         <TouchableOpacity
           accessibilityRole="link"
           onPress={() => {
-            // use replace to avoid stacking auth screens
             if (navigation?.replace) navigation.replace('LogIn');
             else navigation?.navigate?.('LogIn');
           }}
