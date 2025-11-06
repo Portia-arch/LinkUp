@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseAuth } from '../../../config/firebase';
 import { AuthContext } from '../../context/AuthContext.jsx';
@@ -20,6 +20,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
       <Text style={styles.title}>Let's LinkUp👋</Text>
 
@@ -56,6 +57,7 @@ export default function LoginScreen({ navigation }) {
         </Text>
       </View>
     </View>
+    </TouchableWithoutFeedback>
   );
 }
 
