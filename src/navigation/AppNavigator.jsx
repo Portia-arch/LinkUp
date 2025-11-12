@@ -62,7 +62,7 @@ export default function AppNavigator() {
 
   return (
     <Stack.Navigator
-      initialRouteName={user ? 'MainTabs' : 'Login'}
+      initialRouteName={user ? 'MainTabs' : 'LogIn'}
       screenOptions={{
         header: () => <Header />,
         contentStyle: { backgroundColor: '#fff' },

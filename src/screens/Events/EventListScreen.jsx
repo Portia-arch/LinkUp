@@ -10,17 +10,23 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const SERPAPI_KEY = 'ff44039cc4dd30d4326b9274714eed7d9f9f18f689f9e8f4eda6770003752e0b';
 
 export default function EventListScreen() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedCity, setSelectedCity] = useState('Johannesburg');
 
-  const cities = ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Gqeberha'];
+  const [selectedCity, setSelectedCity] = useState('Johannesburg');
+  const [open, setOpen] = useState(false);
+  const [cities, setCities] = useState([
+    { label: 'Johannesburg', value: 'Johannesburg' },
+    { label: 'Cape Town', value: 'Cape Town' },
+    { label: 'Durban', value: 'Durban' },
+    { label: 'Pretoria', value: 'Pretoria' },
+    { label: 'Gqeberha', value: 'Gqeberha' },
+  ]);
 
   const fetchEvents = async (city) => {
     setLoading(true);
@@ -58,18 +64,16 @@ export default function EventListScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Events in {selectedCity}</Text>
 
-      {/* City Selector */}
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={selectedCity}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedCity(itemValue)}
-        >
-          {cities.map((city) => (
-            <Picker.Item key={city} label={city} value={city} />
-          ))}
-        </Picker>
-      </View>
+      <DropDownPicker
+        open={open}
+        value={selectedCity}
+        items={cities}
+        setOpen={setOpen}
+        setValue={setSelectedCity}
+        setItems={setCities}
+        containerStyle={{ marginBottom: 15, zIndex: 1000 }}
+        zIndex={1000} 
+      />
 
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -83,7 +87,6 @@ export default function EventListScreen() {
           data={events}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => {
-
             const eventDate =
               item.date?.start_date
                 ? new Date(item.date.start_date).toLocaleDateString()
@@ -104,7 +107,6 @@ export default function EventListScreen() {
                 <Text style={styles.name}>{item.title}</Text>
 
                 <Text style={styles.date}>{eventDate}</Text>
-
 
                 <Text style={styles.venue}>
                   {item.address || item.location || 'Venue not specified'}
@@ -137,14 +139,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 15,
-    backgroundColor: '#fff',
-  },
-  picker: { height: 50, width: '100%' },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   noEventsText: { textAlign: 'center', color: '#888', fontSize: 16 },
   eventCard: {
@@ -165,7 +159,7 @@ const styles = StyleSheet.create({
   venue: { fontSize: 14, color: '#555', fontStyle: 'italic' },
   description: { fontSize: 14, color: '#555', marginBottom: 10 },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#28a745',
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',

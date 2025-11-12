@@ -1,5 +1,15 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Image,
+} from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseAuth } from '../../../config/firebase';
 import { AuthContext } from '../../context/AuthContext.jsx';
@@ -21,42 +31,48 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={styles.container}>
-      <Text style={styles.title}>Let's LinkUp👋</Text>
-
-      <View style={styles.formContainer}>
-        <Text>Email</Text>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <Text>Password</Text>
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          style={styles.input}
-          secureTextEntry
+      <View style={styles.container}>
+        <Image
+          source={require('../../../assets/images/linkup-logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
 
-        <GoogleSignInButton />
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-        <Text style={styles.link}>
-          Don’t have an account?{' '}
-          <Text style={styles.linkText} onPress={() => navigation.navigate('Register')}>
-            Register
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            style={styles.input}
+            secureTextEntry
+          />
+
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          <GoogleSignInButton />
+
+          <Text style={styles.link}>
+            Don’t have an account?{' '}
+            <Text style={styles.linkText} onPress={() => navigation.navigate('Register')}>
+              Register
+            </Text>
           </Text>
-        </Text>
+        </View>
       </View>
-    </View>
     </TouchableWithoutFeedback>
   );
 }
@@ -66,8 +82,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f9f9f9',
     paddingHorizontal: 20,
+  },
+  logo: {
+    width: 160,
+    height: 120,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    marginBottom: 25,
+    color: '#333',
   },
   formContainer: {
     width: '100%',
@@ -77,11 +104,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     elevation: 4,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: '700',
-    marginBottom: 30,
-    color: '#333',
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#555',
+    marginBottom: 5,
   },
   input: {
     backgroundColor: '#f0f0f0',
@@ -99,6 +126,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: 16,
   },
   link: {
     textAlign: 'center',
