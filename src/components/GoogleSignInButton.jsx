@@ -13,10 +13,10 @@ export default function GoogleSignInButton() {
   const { setUser } = useContext(AuthContext);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-     expoClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
+    expoClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
     webClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
     iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-  androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
     scopes: ['profile', 'email'],
   });
 

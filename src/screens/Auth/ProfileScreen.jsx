@@ -9,10 +9,8 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <Text style={styles.title}>My Profile</Text>
 
-      {/* Profile Card */}
       <View style={styles.profileCard}>
         <Image
           source={{
@@ -40,6 +38,13 @@ export default function ProfileScreen() {
           onPress={() => navigation.navigate('CreateEvent')}
         >
           <Text style={styles.buttonText}>Create New Event</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.infoButton]}
+          onPress={() => navigation.navigate('JoinedEvents')}
+        >
+          <Text style={styles.buttonText}>My Joined Events</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -110,6 +115,9 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     backgroundColor: '#34C759',
+  },
+  infoButton: {
+    backgroundColor: '#5856D6', // new color for "My Joined Events"
   },
   logoutButton: {
     backgroundColor: '#fff',

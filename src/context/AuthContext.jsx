@@ -6,12 +6,11 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [joinedEvents, setJoinedEvents] = useState([]); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
       setUser(user);
-      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -20,13 +19,22 @@ export const AuthProvider = ({ children }) => {
     try {
       await signOut(firebaseAuth);
       setUser(null);
+      setJoinedEvents([]); 
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,         
+        logout,
+        joinedEvents,
+        setJoinedEvents,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -9,9 +9,8 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import EventListScreen from '../screens/Events/EventListScreen';
 import CreateEventScreen from '../screens/Events/CreateEventScreen';
-import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import ProfileScreen from '../screens/Auth/ProfileScreen';
-import EventDetailScreen from '../screens/Events/EventDetailScreen';
+import JoinedEventsScreen from '../screens/Events/JoinedEventsScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -34,8 +33,8 @@ function MainTabs() {
             case 'CreateEvent':
               iconName = 'add-circle-outline';
               break;
-            case 'Dashboard':
-              iconName = 'list-outline';
+            case 'JoinedEvents':
+              iconName = 'information-circle-outline';
               break;
             case 'Profile':
               iconName = 'person-outline';
@@ -47,12 +46,10 @@ function MainTabs() {
         },
       })}
     >
+      <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Events" component={EventListScreen} />
       <Tab.Screen name="CreateEvent" component={CreateEventScreen} />
-            <Tab.Screen name="EventDetail" component={EventDetailScreen} />
-
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="JoinedEvents" component={JoinedEventsScreen} />
     </Tab.Navigator>
   );
 }

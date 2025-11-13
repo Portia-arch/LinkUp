@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
-import { firebaseAuth, firebaseDb } from '../../../config/firebase';
+import { firebaseDb } from '../../../config/firebase';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -9,27 +9,42 @@ export default function EventDetailScreen({ route }) {
   const { user } = useContext(AuthContext);
 
   const handleRSVP = async () => {
-  if (!user) {
-    Alert.alert('Error', 'You must be logged in to RSVP.');
-    return;
-  }
+    if (!user) {
+      Alert.alert('Error', 'You must be logged in to RSVP.');
+      return;
+    }
 
-  try {
-    await setDoc(
-      doc(collection(firebaseDb, `users/${user.uid}/rsvps`), event.id?.toString() || event.title),
-      {
-        name: event.title || event.name,
-        date: event.date_start || event.date,
-        description: event.description || '',
-        joinedAt: new Date(),
-      }
-    );
-    Alert.alert('Success', `You have registered for ${event.title || event.name}`);
-  } catch (err) {
-    console.error('RSVP error:', err);
-    Alert.alert('Error', 'Failed to register for event.');
-  }
-};
+    try {
+      await setDoc(
+        doc(collection(firebaseDb, `users/${user.uid}/rsvps`), event.id?.toString() || event.title),
+        {
+          id: event.id?.toString() || event.title,
+          name: event.title || event.name,
+          date: event.date_start || event.date,
+          description: event.description || '',
+          joinedAt: new Date(),
+        }
+      );
+      Alert.alert('Success', `You have registered for ${event.title || event.name}`);
+    } catch (err) {
+      console.error('RSVP error:', err);
+      Alert.alert('Error', 'Failed to register for event.');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.name}>{event.title || event.name}</Text>
+      <Text style={styles.date}>
+        {event.date_start
+          ? new Date(event.date_start).toLocaleString()
+          : 'Date not available'}
+      </Text>
+      <Text style={styles.description}>{event.description || 'No description available.'}</Text>
+
+      <Button title="RSVP" onPress={handleRSVP} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
