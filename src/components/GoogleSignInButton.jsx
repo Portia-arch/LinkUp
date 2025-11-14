@@ -12,15 +12,17 @@ WebBrowser.maybeCompleteAuthSession();
 export default function GoogleSignInButton() {
   const { setUser } = useContext(AuthContext);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
-    webClientId: '605771402121-78c4bjmrua3f4hlhql929mkk8bvm7cmb.apps.googleusercontent.com',
-    iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-    androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
-    scopes: ['profile', 'email'],
-  });
+const [request, response, promptAsync] = Google.useAuthRequest({
+  expoClientId: '605771402121-8v3hrtu27uvlj0c28aoesgclmd043avf.apps.googleusercontent.com',
+  webClientId: '605771402121-lk2q85em3rtjqs1vsi15mhd3n3pvbbp1.apps.googleusercontent.com',
+  iosClientId: '605771402121-57m8gphpj97npc2veuoaotlh426kh42f.apps.googleusercontent.com',
+  redirectUri: 'https://auth.expo.io/@nomvelo/linkup',
+  scopes: ['profile', 'email'],
+});
+
 
   useEffect(() => {
+    console.log('Google response', response);
     const signInWithGoogle = async () => {
       try {
         if (response?.type === 'success') {
