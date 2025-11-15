@@ -9,8 +9,9 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import EventListScreen from '../screens/Events/EventListScreen';
 import CreateEventScreen from '../screens/Events/CreateEventScreen';
-import ProfileScreen from '../screens/Auth/ProfileScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
 import JoinedEventsScreen from '../screens/Events/JoinedEventsScreen';
+import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -77,6 +78,15 @@ export default function AppNavigator() {
           options={{ headerShown: false }}
         />
       )}
+
+      <Stack.Screen 
+  name="EditProfile" 
+  component={EditProfileScreen}
+  options={{ title: "Edit Profile" }}
+/>
+
     </Stack.Navigator>
+
+    
   );
 }

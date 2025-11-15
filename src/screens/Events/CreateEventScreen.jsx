@@ -137,11 +137,9 @@ const styles = StyleSheet.create({
   input: { backgroundColor: '#F2F2F7', borderRadius: 12, padding: 12, marginTop: 6, fontSize: 16 },
   textArea: { height: 100, textAlignVertical: 'top' },
 
-  // Dropdown Styles
   dropdown: { backgroundColor: '#F2F2F7', borderRadius: 12, marginTop: 6 },
   dropdownContainer: { borderRadius: 12 },
 
-  // Date button
   dateSelector: {
     backgroundColor: '#F2F2F7',
     padding: 12,
@@ -150,7 +148,6 @@ const styles = StyleSheet.create({
   },
   dateText: { fontSize: 16, color: '#333' },
 
-  // Submit button
   submitButton: {
     backgroundColor: '#007AFF',
     paddingVertical: 14,
