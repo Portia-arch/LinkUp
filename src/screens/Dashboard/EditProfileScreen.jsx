@@ -4,6 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../../context/AuthContext';
 import { firebaseDb } from '../../../config/firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+
 
 export default function EditProfileScreen({ navigation }) {
   const { user, updateUser } = useContext(AuthContext);
@@ -24,30 +26,40 @@ export default function EditProfileScreen({ navigation }) {
   };
 
   const saveProfile = async () => {
-    try {
-      updateUser({ displayName: name, photoURL });
-      await setDoc(doc(firebaseDb, 'users', user.uid), {
-        name,
-        photoURL,
-        email: user.email,
-      });
-      Alert.alert('Success', 'Profile updated successfully!');
-      navigation.navigate('ProfileMain');
-    } catch (e) {
-      console.error(e);
-      Alert.alert('Error', 'Failed to update profile.');
+  try {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      Alert.alert('Error', 'No authenticated user found.');
+      console.error('No authenticated user');
+      return;
     }
-  };
+
+    await updateUser({ displayName: name, photoURL });
+
+    const userRef = doc(firebaseDb, 'users', currentUser.uid);
+    await setDoc(userRef, {
+      name,
+      photoURL,
+      email: currentUser.email,
+    });
+
+    Alert.alert('Success', 'Profile updated successfully!');
+    navigation.navigate('Profile');
+  } catch (e) {
+    console.error('Profile update error:', e);
+    Alert.alert('Error', `Failed to update profile: ${e.message}`);
+  }
+};
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Edit Profile</Text>
         </View>
 
-        {/* Profile Card */}
         <View style={styles.profileCard}>
           <TouchableOpacity onPress={pickImage} style={{ alignItems: 'center' }}>
             <Image

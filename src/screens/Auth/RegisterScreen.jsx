@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import {
   View, TextInput, Text, StyleSheet, Keyboard,
-  TouchableOpacity, Alert, TouchableWithoutFeedback
+  TouchableOpacity, Alert, TouchableWithoutFeedback, ScrollView
 } from 'react-native';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { firebaseAuth } from '../../../config/firebase';
@@ -38,18 +38,19 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Create Account 📝</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.headerTitle}>Create Account 📝</Text>
 
-        <View style={styles.formContainer}>
-          <Text>Full Name</Text>
+        <View style={styles.formCard}>
+          <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
             placeholder="Full Name"
             value={name}
             onChangeText={setName}
           />
-          <Text>Email</Text>
+
+          <Text style={styles.label}>Email</Text>
           <TextInput
             placeholder="Email"
             value={email}
@@ -58,7 +59,8 @@ export default function RegisterScreen({ navigation }) {
             keyboardType="email-address"
             autoCapitalize="none"
           />
-          <Text>Password</Text>
+
+          <Text style={styles.label}>Password</Text>
           <TextInput
             placeholder="Password"
             value={password}
@@ -80,57 +82,71 @@ export default function RegisterScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F1F4F8',
     paddingHorizontal: 20,
+    paddingVertical: 30,
   },
-  formContainer: {
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 30,
+  },
+  formCard: {
     width: '100%',
     maxWidth: 350,
     backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 15,
-    elevation: 4,
+    padding: 25,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 6,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: '700',
-    marginBottom: 30,
-    color: '#333',
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#475569',
+    marginBottom: 6,
   },
   input: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    padding: 12,
+    backgroundColor: '#F5F7FA',
+    borderRadius: 12,
+    padding: 14,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   button: {
-    backgroundColor: '#28a745',
-    borderRadius: 10,
-    paddingVertical: 12,
+    backgroundColor: '#0EA5E9',
+    borderRadius: 14,
+    paddingVertical: 14,
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: 16,
   },
   link: {
     textAlign: 'center',
     marginTop: 15,
-    color: '#555',
+    color: '#6B7280',
   },
   linkText: {
-    color: '#28a745',
+    color: '#0EA5E9',
     fontWeight: '600',
   },
 });

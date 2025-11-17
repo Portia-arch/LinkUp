@@ -300,7 +300,6 @@ export default function AppHeader({ showProfile = true }) {
     opacity: slideAnim,
   };
 
-  // hide header on login screen
   if (route.name === 'LogIn') return null;
 
   return (

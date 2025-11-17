@@ -19,7 +19,6 @@ export default function EventListScreen() {
   const [selectedCity, setSelectedCity] = useState('Johannesburg');
   const cities = ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Gqeberha'];
 
-  /** Generate consistent event ID */
   const getEventId = (event) =>
     `${event.title || ''}_${event.date || ''}_${event.location || ''}`
       .replace(/\s+/g, '_')
@@ -125,7 +124,7 @@ export default function EventListScreen() {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" />
-        <Text>Loading events...</Text>
+        <Text style={styles.loadingText}>Loading events...</Text>
       </View>
     );
   }
@@ -151,13 +150,34 @@ export default function EventListScreen() {
           />
         )}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        contentContainerStyle={{ paddingVertical: 10 }}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 14, backgroundColor: '#f5f5f5' },
-  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { fontSize: 22, fontWeight: '700', marginBottom: 10, textAlign: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: '#F1F4F8',
+    paddingHorizontal: 16,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F1F4F8',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#475569',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginVertical: 10,
+    color: '#1E293B',
+    textAlign: 'center',
+  },
 });

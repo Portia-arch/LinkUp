@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Platform,
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, Alert, Keyboard, TouchableWithoutFeedback,
+  Platform, ScrollView
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -41,12 +35,7 @@ export default function CreateEventScreen({ navigation }) {
     if (!title || !description || !city) {
       Alert.alert('Please fill in all fields');
       return;
-    } 
-      Alert.alert('Event created successfully!');
-      setTitle('');
-      setDescription('');
-      setCity('');
-      navigation.navigate('Events', { refresh: true });
+    }
 
     try {
       await addDoc(collection(firebaseDb, 'events'), {
@@ -57,6 +46,12 @@ export default function CreateEventScreen({ navigation }) {
         createdAt: serverTimestamp(),
       });
 
+      Alert.alert('Event created successfully!');
+      setTitle('');
+      setDescription('');
+      setCity(null);
+      navigation.navigate('Events', { refresh: true });
+
     } catch (error) {
       console.error('Error creating event:', error);
       Alert.alert('Error', 'Failed to create event.');
@@ -65,7 +60,7 @@ export default function CreateEventScreen({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.header}>Create New Event</Text>
 
         <View style={styles.formCard}>
@@ -124,36 +119,85 @@ export default function CreateEventScreen({ navigation }) {
             <Text style={styles.submitText}>Create Event</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F7FA', padding: 20 },
-  header: { fontSize: 26, fontWeight: '700', color: '#1A1A1A', marginBottom: 20 },
-  formCard: { backgroundColor: '#fff', borderRadius: 20, padding: 20, elevation: 4 },
-  label: { fontSize: 14, fontWeight: '600', marginTop: 10, color: '#333' },
-  input: { backgroundColor: '#F2F2F7', borderRadius: 12, padding: 12, marginTop: 6, fontSize: 16 },
-  textArea: { height: 100, textAlignVertical: 'top' },
-
-  dropdown: { backgroundColor: '#F2F2F7', borderRadius: 12, marginTop: 6 },
-  dropdownContainer: { borderRadius: 12 },
-
-  dateSelector: {
-    backgroundColor: '#F2F2F7',
-    padding: 12,
+  container: {
+    flexGrow: 1,
+    backgroundColor: '#F1F4F8',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: 20,
+  },
+  formCard: {
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    padding: 25,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#475569',
+    marginTop: 12,
+  },
+  input: {
+    backgroundColor: '#F5F7FA',
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 6,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  dropdown: {
+    backgroundColor: '#F5F7FA',
     borderRadius: 12,
     marginTop: 6,
+    borderColor: '#E5E7EB',
   },
-  dateText: { fontSize: 16, color: '#333' },
-
-  submitButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
+  dropdownContainer: {
     borderRadius: 12,
+    borderColor: '#E5E7EB',
+  },
+  dateSelector: {
+    backgroundColor: '#F5F7FA',
+    padding: 14,
+    borderRadius: 12,
+    marginTop: 6,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#1E293B',
+  },
+  submitButton: {
+    backgroundColor: '#0EA5E9',
+    paddingVertical: 14,
+    borderRadius: 14,
     alignItems: 'center',
     marginTop: 20,
   },
-  submitText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  submitText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
 });
