@@ -9,9 +9,9 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import EventListScreen from '../screens/Events/EventListScreen';
 import CreateEventScreen from '../screens/Events/CreateEventScreen';
-import ProfileScreen from '../screens/Profile/ProfileScreen';
+import ProfileScreen from '../screens/Dashboard/ProfileScreen';
 import JoinedEventsScreen from '../screens/Events/JoinedEventsScreen';
-import EditProfileScreen from '../screens/Profile/EditProfileScreen';
+import EditProfileScreen from '../screens/Dashboard/EditProfileScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -31,14 +31,14 @@ function MainTabs() {
             case 'Profile':
               iconName = 'person-outline';
               break;
-            case 'Events':
-              iconName = 'calendar-outline';
-              break;
             case 'CreateEvent':
               iconName = 'add-circle-outline';
               break;
             case 'JoinedEvents':
               iconName = 'information-circle-outline';
+              break;
+              case 'Events':
+              iconName = 'calendar-outline';
               break;
             default:
               iconName = 'ellipse-outline';
@@ -79,14 +79,14 @@ export default function AppNavigator() {
         />
       )}
 
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={{ title: "Edit Profile" }}
-      />
+      <Stack.Screen 
+  name="EditProfile" 
+  component={EditProfileScreen}
+  options={{ title: "Edit Profile" }}
+/>
 
     </Stack.Navigator>
 
-
+    
   );
 }
