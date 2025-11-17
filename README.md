@@ -1,5 +1,5 @@
 # LinkUp
-A simple React Native mobile app for user-created community events, allowing users to register, RSVP, and view events. The app includes authentication (email/password + Google + Facebook), event creation, a user dashboard, and profile management.
+A simple React Native mobile app for user-created community events, allowing users to register, RSVP, and view events. The app includes authentication (email/password + Auth0(Google, Apple)), event creation, a user dashboard, and profile management.
 
 
 ## Features
@@ -8,7 +8,7 @@ A simple React Native mobile app for user-created community events, allowing use
 
 Email/password login and registration
 Google Sign-In
-Facebook Sign-In
+Apple Sign-In
 
 ## User Profile:
 
@@ -17,8 +17,8 @@ Logout functionality
 
 ## Events:
 
-View list of upcoming events (mock API)
-Create new events with name, description, and date
+View list of upcoming events (SERPAPI API)
+Create new events with name, description, location and date
 RSVP to events
 Dashboard with registered events
 
@@ -35,11 +35,11 @@ Clear and intuitive interface
 ## Tech Stack
 
 React Native – Mobile development framework
-Firebase Authentication – Email/password and social login
+Firebase Authentication – Email/password 
+Auth0 - Social login
 Expo – React Native toolchain for easier development
 React Navigation – Screen navigation
 JavaScript / JSX – Component-based UI
-Expo Auth Session – Social login OAuth integration
 
 
 ## Setup & Installation
@@ -78,8 +78,6 @@ Firebase Configuration
 2. Enable Authentication → Sign-in Methods:
 
 Email/Password
-Google
-Facebook
 
 3. Copy your Firebase config to firebase.js:
 
@@ -94,35 +92,47 @@ const firebaseConfig = {
 
 ## Social Login Setup
 
- Google Sign-In
+All social logins (Google, Apple) are handled via Auth0.
 
-1. Enable Google Sign-In in Firebase
-2. Add Web client ID to GoogleSignInButton.jsx
-3. For iOS: add reservedClientId in app.json
 
- Facebook Sign-In
+1. Create an Auth0 Application
 
-1. Create a Facebook App at https://developers.facebook.com
-2. Enable Facebook login in Firebase
-3. Add App ID to FacebookSignInButton.jsx
-4. Make sure OAuth redirect URI matches Firebase’s instructions
+-- Application type: Native.
+
+2. Configure Callback URLs
+
+ -- Development: https://auth.expo.dev/@your-username/your-app-slug
+
+ -- Production: your deployed app URL or custom scheme (e.g., myapp://redirect)
+
+3. Enable Social Connections
+
+ -- In Auth0 Dashboard → Connections → Social, enable Google, Facebook, or Apple.
+
+4. Update Credentials
+
+ --Add Auth0 Domain and Client ID in Auth0LoginButton.jsx.
+
+5. Test Login
+
+ -- Press the Auth0 login button in Expo to authenticate via any enabled provider.
 
 
 ## Project Architecture
 
 App.jsx – Entry point, wraps AppNavigator with AuthProvider
-AuthContext.jsx – Provides user authentication state
+context – Provides user authentication state and RSVP
 Screens – Divided by feature:
 Auth/ – Login, Register, Profile
-Events/ – Event List, Event Create, Event Detail
+Events/ – Event List, Event Create, Event Detail, Joined Events
 Dashboard/ – User dashboard
-Components – Reusable UI elements (EventCard, Social Buttons)
-API – Mock API calls (can replace with real API)
+Components – Reusable UI elements (EventCard, Social Button, Header, RSVP Button and City Dropdown)
+API – SERPAPI API calls 
 
 
 ## Usage
 
-Login via email/password, Google, or Facebook
+Login via email/password, Google, or Apple
 View upcoming events
 Create a new event
 RSVP to events and view registered events in dashboard
@@ -131,15 +141,19 @@ Update profile and logout
 
 ## Future Improvements
 
-Integrate real backend API (e.g., Eventbrite)
+Integrate stable backend API (e.g., Eventbrite)
 
-Add push notifications for upcoming events
+Add push notifications for upcoming events, add saved/bookmark events
 
 Add location/map support for events
+
+Add dark mode/light mode, about app
 
 Enable sharing events with friends
 
 Implement persistent storage for offline access
+
+Include password change
 
 
 ## File Structure
@@ -154,7 +168,9 @@ LINKUP/
 │   │   ├── EventCard.jsx
 │   │   ├── GoogleSignInButton.jsx
 │   │   └── FacebookSignInButton.jsx
-│   ├── context/AuthContext.jsx
+│   ├── screens/
+│   │   ├── AuthContext.jsx
+│   │   ├── screens/RSVPContext.jsx
 │   ├── navigation/AppNavigator.jsx
 │   ├── screens/
 │   │   ├── Auth/LoginScreen.jsx
@@ -164,4 +180,3 @@ LINKUP/
 │   │   ├── Events/EventCreateScreen.jsx
 │   │   └── Events/EventDetailScreen.jsx
 │   │   └── Dashboard/DashboardScreen.jsx 
-```

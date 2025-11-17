@@ -42,7 +42,6 @@ export default function JoinedEventsScreen() {
     fetchRSVPs();
   }, [user]);
 
-  // Pull-to-refresh handler
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchRSVPs();

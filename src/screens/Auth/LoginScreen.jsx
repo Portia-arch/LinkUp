@@ -57,14 +57,12 @@ export default function LoginScreen({ navigation }) {
         contentContainerStyle={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        {/* Logo */}
         <Image
           source={require("../../../assets/images/linkup-logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
 
-        {/* Card */}
         <View style={styles.formContainer}>
           {user ? (
             <>

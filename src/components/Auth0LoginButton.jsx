@@ -14,7 +14,7 @@ export default function Auth0LoginButton() {
   const { setUser } = useContext(AuthContext);
 
   const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
-  console.log('Redirect URI:', redirectUri); // <--- log it to console
+  console.log('Redirect URI:', redirectUri);
 
 
   const discovery = {
