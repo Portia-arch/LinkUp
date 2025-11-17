@@ -3,7 +3,7 @@
     "name": "LinkUp",
     "slug": "linkup",
     "owner": "nomvelo",
-    "scheme": "linkup", 
+    "scheme": "linkup",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/linkup-logo.png",
@@ -31,8 +31,10 @@
       "eas": {
         "projectId": "linkup-c1929",
         "googleClientId": "605771402121-8v3hrtu27uvlj0c28aoesgclmd043avf.apps.googleusercontent.com"
-
       }
-    }
+    },
+    "plugins": [
+      "expo-web-browser"
+    ]
   }
 }

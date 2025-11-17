@@ -10,7 +10,7 @@ export default function FacebookSignInButton() {
   const { setUser } = useContext(AuthContext);
 
   const [request, response, promptAsync] = Facebook.useAuthRequest({
-    clientId: 'YOUR_FACEBOOK_APP_ID',
+    clientId: '1555181355513418',
   });
 
   useEffect(() => {

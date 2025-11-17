@@ -1,296 +1,111 @@
-// import React, { useContext } from 'react';
-// import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
-// import { AuthContext } from '../../context/AuthContext.jsx';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { AuthContext } from '../../context/AuthContext';
+import { firebaseDb, firebaseAuth } from '../../../config/firebase';
+import { updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
-// export default function ProfileScreen() {
-//   const { user, logout } = useContext(AuthContext);
-//   const navigation = useNavigation();
+export default function EditProfileScreen({ navigation }) {
+  const { user, setUser } = useContext(AuthContext);
 
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>My Profile</Text>
+  const [name, setName] = useState(user?.displayName || user?.name || '');
+  const [photoURL, setPhotoURL] = useState(user?.photoURL || user?.picture || '');
 
-//       <View style={styles.profileCard}>
-//         <Image
-//           source={{
-//             uri:
-//               user?.photoURL ||
-//               'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-//           }}
-//           style={styles.avatar}
-//         />
-//         <Text style={styles.name}>{user?.displayName || 'Guest User'}</Text>
-//         <Text style={styles.email}>{user?.email || 'No email available'}</Text>
-//       </View>
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.7,
+    });
 
-//       {/* Actions */}
-//       <View style={styles.buttonContainer}>
-//         <TouchableOpacity
-//           style={[styles.button, styles.primaryButton]}
-//           onPress={() => navigation.navigate('Events')}
-//         >
-//           <Text style={styles.buttonText}>View Community Events</Text>
-//         </TouchableOpacity>
+    if (!result.canceled) {
+      setPhotoURL(result.assets[0].uri);
+    }
+  };
 
-//         <TouchableOpacity
-//           style={[styles.button, styles.secondaryButton]}
-//           onPress={() => navigation.navigate('CreateEvent')}
-//         >
-//           <Text style={styles.buttonText}>Create New Event</Text>
-//         </TouchableOpacity>
+  const saveProfile = async () => {
+    try {
+      if (user?.uid) {
+        const currentUser = firebaseAuth.currentUser;
+        if (!currentUser) throw new Error('No Firebase user logged in');
 
-//         <TouchableOpacity
-//           style={[styles.button, styles.infoButton]}
-//           onPress={() => navigation.navigate('JoinedEvents')}
-//         >
-//           <Text style={styles.buttonText}>My Joined Events</Text>
-//         </TouchableOpacity>
+        await updateProfile(currentUser, { displayName: name, photoURL });
+        await setDoc(doc(firebaseDb, 'users', currentUser.uid), {
+          name,
+          photoURL,
+          email: currentUser.email,
+        });
 
-//         <TouchableOpacity
-//           style={[styles.button, styles.logoutButton]}
-//           onPress={logout}
-//         >
-//           <Text style={styles.logoutText}>Log Out</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// }
+      } else if (user?.sub) {
+        await setDoc(doc(firebaseDb, 'users', user.sub), {
+          name,
+          photoURL,
+          email: user.email,
+        });
+      } else {
+        throw new Error('Unknown user provider');
+      }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#F5F7FA',
-//     alignItems: 'center',
-//     padding: 20,
-//   },
-//   title: {
-//     fontSize: 26,
-//     fontWeight: '700',
-//     color: '#1A1A1A',
-//     marginVertical: 20,
-//   },
-//   profileCard: {
-//     backgroundColor: '#fff',
-//     width: '90%',
-//     borderRadius: 20,
-//     alignItems: 'center',
-//     paddingVertical: 30,
-//     paddingHorizontal: 15,
-//     shadowColor: '#000',
-//     shadowOpacity: 0.1,
-//     shadowRadius: 6,
-//     shadowOffset: { width: 0, height: 3 },
-//     elevation: 4,
-//     marginBottom: 30,
-//   },
-//   avatar: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//     marginBottom: 15,
-//   },
-//   name: {
-//     fontSize: 20,
-//     fontWeight: '600',
-//     color: '#333',
-//   },
-//   email: {
-//     fontSize: 14,
-//     color: '#777',
-//     marginTop: 5,
-//   },
-//   buttonContainer: {
-//     width: '90%',
-//   },
-//   button: {
-//     borderRadius: 12,
-//     paddingVertical: 14,
-//     marginVertical: 8,
-//     alignItems: 'center',
-//   },
-//   primaryButton: {
-//     backgroundColor: '#007AFF',
-//   },
-//   secondaryButton: {
-//     backgroundColor: '#34C759',
-//   },
-//   infoButton: {
-//     backgroundColor: '#5856D6', // new color for "My Joined Events"
-//   },
-//   logoutButton: {
-//     backgroundColor: '#fff',
-//     borderWidth: 1,
-//     borderColor: '#FF3B30',
-//   },
-//   buttonText: {
-//     color: '#fff',
-//     fontWeight: '600',
-//     fontSize: 16,
-//   },
-//   logoutText: {
-//     color: '#FF3B30',
-//     fontWeight: '600',
-//     fontSize: 16,
-//   },
-// });
+      setUser({ displayName: name, photoURL });
 
+      Alert.alert('Success', 'Profile updated successfully!');
+      navigation.navigate('Profile');
 
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from '../../context/AuthContext.jsx';
-
-export default function ProfileScreen() {
-  const { user, logout } = useContext(AuthContext);
-  const navigation = useNavigation();
+    } catch (e) {
+      console.error(e);
+      Alert.alert('Error', 'Failed to update profile.');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Profile</Text>
+      <Text style={styles.title}>Edit Profile</Text>
 
-      <View style={styles.profileCard}>
+      <TouchableOpacity onPress={pickImage}>
         <Image
           source={{
-            uri:
-              user?.photoURL ||
-              'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+            uri: photoURL || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
           }}
           style={styles.avatar}
         />
-        <Text style={styles.name}>{user?.displayName || 'Guest User'}</Text>
-        <Text style={styles.email}>{user?.email || 'No email available'}</Text>
+        <Text style={styles.changePhoto}>Change Photo</Text>
+      </TouchableOpacity>
 
-        {/* NEW: Settings Button */}
-        <TouchableOpacity
-          style={[styles.smallButton]}
-          onPress={() => navigation.navigate('EditProfile')}
-        >
-          <Text style={styles.smallButtonText}>Edit Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Full Name"
+        value={name}
+        onChangeText={setName}
+      />
 
-      {/* Actions */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
-          onPress={() => navigation.navigate('Events')}
-        >
-          <Text style={styles.buttonText}>View Community Events</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
-          onPress={() => navigation.navigate('CreateEvent')}
-        >
-          <Text style={styles.buttonText}>Create New Event</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.infoButton]}
-          onPress={() => navigation.navigate('JoinedEvents')}
-        >
-          <Text style={styles.buttonText}>My Joined Events</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.logoutButton]}
-          onPress={logout}
-        >
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.saveButton} onPress={saveProfile}>
+        <Text style={styles.saveText}>Save Changes</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F7FA',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#1A1A1A',
-    marginVertical: 20,
-  },
-  profileCard: {
-    backgroundColor: '#fff',
+  container: { flex: 1, padding: 20, alignItems: 'center', backgroundColor: '#F5F7FA' },
+  title: { fontSize: 24, fontWeight: '700', marginBottom: 20 },
+  avatar: { width: 120, height: 120, borderRadius: 60, marginBottom: 10 },
+  changePhoto: { color: '#007AFF', fontSize: 14, marginBottom: 20 },
+  input: {
     width: '90%',
-    borderRadius: 20,
-    alignItems: 'center',
-    paddingVertical: 30,
-    paddingHorizontal: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 4,
-    marginBottom: 30,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 15,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-  },
-  email: {
-    fontSize: 14,
-    color: '#777',
-    marginTop: 5,
-  },
-  buttonContainer: {
-    width: '90%',
-  },
-  button: {
-    borderRadius: 12,
-    paddingVertical: 14,
-    marginVertical: 8,
-    alignItems: 'center',
-  },
-  primaryButton: {
-    backgroundColor: '#007AFF',
-  },
-  secondaryButton: {
-    backgroundColor: '#34C759',
-  },
-  infoButton: {
-    backgroundColor: '#5856D6', // new color for "My Joined Events"
-  },
-  logoutButton: {
     backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#FF3B30',
+    borderColor: '#ddd',
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+  saveButton: {
+    backgroundColor: '#34C759',
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 12,
   },
-  logoutText: {
-    color: '#FF3B30',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  smallButton: {
-  backgroundColor: '#007AFF',
-  paddingHorizontal: 20,
-  paddingVertical: 8,
-  borderRadius: 10,
-  marginTop: 10,
-},
-smallButtonText: {
-  color: '#fff',
-  fontSize: 14,
-  fontWeight: '600',
-},
+  saveText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 });

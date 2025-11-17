@@ -14,6 +14,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../context/AuthContext';
+import navigation from '../navigation/AppNavigator';
 
 export default function AppHeader({ showProfile = true }) {
   const navigation = useNavigation();
@@ -22,7 +23,7 @@ export default function AppHeader({ showProfile = true }) {
   const [menuVisible, setMenuVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
-  const { user, setUser } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext); // <-- use logout from context
   const route = useRoute();
 
   const toggleMenu = () => setMenuVisible((prev) => !prev);
@@ -39,7 +40,7 @@ export default function AppHeader({ showProfile = true }) {
   const requireLogin = (callback) => {
     if (!user) {
       Alert.alert('Login required', 'Please log in first.');
-      navigation.navigate('Login');
+      navigation.navigate('LogIn');
       return;
     }
     callback();
@@ -47,13 +48,26 @@ export default function AppHeader({ showProfile = true }) {
 
   const handleLogout = () => {
     if (!user) {
-      Alert.alert('Login required', 'Please log in first.');
-      navigation.navigate('Login');
+      Alert.alert('Not logged in', 'You are not logged in.');
       return;
     }
-    setUser(null);
-    setMenuVisible(false);
-    navigation.navigate('Login');
+
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: () => {
+            logout(); // <-- calls Firebase or Auth0 logout internally
+            setMenuVisible(false);
+            navigation.navigate('LogIn');
+          },
+        },
+      ]
+    );
   };
 
   const slideStyle = {
@@ -68,12 +82,11 @@ export default function AppHeader({ showProfile = true }) {
     opacity: slideAnim,
   };
 
-  if (route.name === 'Login') return null;
+  if (route.name === 'LogIn') return null;
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={[styles.header, { height: width * 0.15 }]}>
-        
         <TouchableOpacity
           style={styles.logoWrapper}
           onPress={() => navigation.navigate('Profile')}
@@ -176,7 +189,6 @@ const styles = StyleSheet.create({
   },
   logoWrapper: { justifyContent: 'center' },
   logo: { width: 110, height: 45 },
-
   userAvatar: {
     width: 36,
     height: 36,
@@ -184,7 +196,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
   },
-
   profileButton: { padding: 4 },
   dropdownMenu: {
     position: 'absolute',

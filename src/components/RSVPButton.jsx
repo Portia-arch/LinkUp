@@ -1,0 +1,58 @@
+import React, { useContext, useState, useEffect } from 'react';
+import { TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { firebaseDb } from '../../config/firebase';
+import { AuthContext } from '../context/AuthContext';
+
+export default function RSVPButton({ event, initialJoined, onChange }) {
+    const { user } = useContext(AuthContext);
+    const [isJoined, setIsJoined] = useState(initialJoined);
+
+    useEffect(() => {
+        setIsJoined(initialJoined);
+    }, [initialJoined]);
+
+    const handlePress = async () => {
+        if (!user) {
+            Alert.alert('Login required', 'You need to login to RSVP.');
+            return;
+        }
+
+        const eventId = event.computedId;
+        const ref = doc(firebaseDb, `users/${user.uid}/rsvps`, eventId);
+
+        try {
+            if (isJoined) {
+                setIsJoined(false);
+                await deleteDoc(ref);
+                Alert.alert('RSVP Cancelled', `You have unjoined "${event.title}"`);
+            } else {
+                setIsJoined(true);
+                await setDoc(ref, { ...event, createdAt: new Date() });
+                Alert.alert('RSVP Confirmed', `You have joined "${event.title}"`);
+            }
+
+            if (onChange) {
+                onChange(eventId, !isJoined);
+            }
+        } catch (err) {
+            console.error('RSVP error:', err);
+            setIsJoined(prev => !prev);
+            Alert.alert('Error', 'RSVP failed');
+        }
+    };
+
+    return (
+        <TouchableOpacity
+            style={[styles.btn, { backgroundColor: isJoined ? '#d97706' : '#28a745' }]}
+            onPress={handlePress}
+        >
+            <Text style={styles.btnText}>{isJoined ? 'Joined' : 'Join / RSVP'}</Text>
+        </TouchableOpacity>
+    );
+}
+
+const styles = StyleSheet.create({
+    btn: { padding: 12, borderRadius: 10, marginTop: 10, alignItems: 'center' },
+    btnText: { color: 'white', fontWeight: '700' },
+});

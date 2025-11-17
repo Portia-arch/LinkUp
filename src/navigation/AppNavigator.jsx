@@ -28,6 +28,9 @@ function MainTabs() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
           switch (route.name) {
+            case 'Profile':
+              iconName = 'person-outline';
+              break;
             case 'Events':
               iconName = 'calendar-outline';
               break;
@@ -36,9 +39,6 @@ function MainTabs() {
               break;
             case 'JoinedEvents':
               iconName = 'information-circle-outline';
-              break;
-            case 'Profile':
-              iconName = 'person-outline';
               break;
             default:
               iconName = 'ellipse-outline';
@@ -79,14 +79,14 @@ export default function AppNavigator() {
         />
       )}
 
-      <Stack.Screen 
-  name="EditProfile" 
-  component={EditProfileScreen}
-  options={{ title: "Edit Profile" }}
-/>
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{ title: "Edit Profile" }}
+      />
 
     </Stack.Navigator>
 
-    
+
   );
 }
