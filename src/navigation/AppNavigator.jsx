@@ -9,6 +9,7 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import EventListScreen from '../screens/Events/EventListScreen';
 import CreateEventScreen from '../screens/Events/CreateEventScreen';
+import EventDetailScreen from '../screens/Events/EventDetailScreen';
 import ProfileScreen from '../screens/Dashboard/ProfileScreen';
 import JoinedEventsScreen from '../screens/Events/JoinedEventsScreen';
 import EditProfileScreen from '../screens/Dashboard/EditProfileScreen';
@@ -84,6 +85,12 @@ export default function AppNavigator() {
   component={EditProfileScreen}
   options={{ title: "Edit Profile" }}
 />
+
+ <Stack.Screen 
+        name="EventDetail" 
+        component={EventDetailScreen} 
+        options={{ title: 'Event Details' }}
+      />
 
     </Stack.Navigator>
 

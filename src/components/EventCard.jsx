@@ -1,92 +1,84 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import RSVPButton from './RSVPButton';
+import { useNavigation } from '@react-navigation/native';
+import * as Sharing from 'expo-sharing';
 
-export default function EventCard({ event, initialJoined, onRSVP }) {
+export default function EventCard({ event, isJoined, onRSVP }) {
+  const navigation = useNavigation();
+
+  const handleShare = async () => {
+    try {
+      await Sharing.shareAsync(
+        `Check out this event: ${event.title}\n${event.date}\n${event.location}\n\n${event.description}`
+      );
+    } catch (err) {
+      console.error('Share error:', err);
+    }
+  };
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.9}
+      onPress={() => navigation.navigate('EventDetail', { event })}
+    >
       {event.image && <Image source={{ uri: event.image }} style={styles.image} />}
 
       <Text style={styles.title}>{event.title}</Text>
-
-      <View style={styles.tagContainer}>
-        <Text style={styles.tag}>
-          {event.source === 'INTERNAL' ? 'INTERNAL EVENT' : 'EXTERNAL EVENT'}
-        </Text>
-      </View>
+      <Text style={styles.tag}>
+        {event.source === 'INTERNAL' ? 'INTERNAL EVENT' : 'EXTERNAL EVENT'}
+      </Text>
       <Text style={styles.date}>{event.date}</Text>
-      <Text style={styles.location}>{event.location || 'No location specified'}</Text>
+      <Text style={styles.location}>{event.location}</Text>
       <Text style={styles.desc} numberOfLines={3}>
-        {event.description || 'No description available'}
+        {event.description}
       </Text>
 
-      <RSVPButton event={event} isJoined={initialJoined} onUpdate={onRSVP} />
-    </View>
+      <View style={styles.buttonRow}>
+        <RSVPButton
+          event={event}
+          initialJoined={isJoined}
+          onChange={onRSVP}
+          style={styles.button}
+        />
+        
+      </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 18,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 10,
-    elevation: 4,
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 14,
+    elevation: 3,
   },
   image: {
     width: '100%',
     height: 180,
-    borderRadius: 14,
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 6,
-  },
-  tagContainer: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#0EA5E9',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginBottom: 8,
-  },
-  tag: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  date: {
-    fontSize: 14,
-    color: '#475569',
-    marginBottom: 4,
-  },
-  location: {
-    fontSize: 14,
-    color: '#64748B',
-    fontStyle: 'italic',
-    marginBottom: 6,
-  },
-  desc: {
-    fontSize: 15,
-    color: '#334155',
+    borderRadius: 10,
     marginBottom: 10,
   },
-  rsvpButton: {
-    backgroundColor: '#0EA5E9',
-    borderRadius: 14,
-    paddingVertical: 14,
-    alignItems: 'center',
+  title: { fontSize: 18, fontWeight: '700' },
+  tag: {
+    backgroundColor: '#007AFF',
+    color: 'white',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+    marginVertical: 4,
+    fontSize: 12,
   },
-  rsvpText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+  date: { color: '#555', marginTop: 4 },
+  location: { color: '#777', marginBottom: 6 },
+  desc: { color: '#444' },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
 });

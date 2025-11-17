@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, Share } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { firebaseDb } from '../../../config/firebase';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { AuthContext } from '../../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 export default function EventDetailScreen({ route }) {
   const { event } = route.params;
   const { user } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   const handleRSVP = async () => {
     if (!user) {
@@ -16,10 +19,7 @@ export default function EventDetailScreen({ route }) {
 
     try {
       await setDoc(
-        doc(
-          collection(firebaseDb, `users/${user.uid}/rsvps`),
-          event.id?.toString() || event.title
-        ),
+        doc(collection(firebaseDb, `users/${user.uid}/rsvps`), event.id?.toString() || event.title),
         {
           id: event.id?.toString() || event.title,
           name: event.title || event.name,
@@ -35,22 +35,48 @@ export default function EventDetailScreen({ route }) {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `Check out this event: ${event.title}\n${event.description}\nDate: ${event.date_start || event.date}`,
+      });
+    } catch (err) {
+      Alert.alert('Error', 'Failed to share the event.');
+    }
+  };
+
+  const coords = event.locationCoords || { latitude: -26.2041, longitude: 28.0473 }; 
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backText}>← Back</Text>
+      </TouchableOpacity>
+
       <View style={styles.card}>
         <Text style={styles.name}>{event.title || event.name}</Text>
-        <Text style={styles.date}>
-          {event.date_start
-            ? new Date(event.date_start).toLocaleString()
-            : 'Date not available'}
-        </Text>
+        <Text style={styles.date}>{event.date}</Text>
         <Text style={styles.description}>
           {event.description || 'No description available.'}
         </Text>
 
-        <TouchableOpacity style={styles.rsvpButton} onPress={handleRSVP}>
-          <Text style={styles.rsvpText}>RSVP</Text>
-        </TouchableOpacity>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        >
+          <Marker coordinate={coords} title={event.title} description={event.description} />
+        </MapView>
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.button} onPress={handleShare}>
+            <Text style={styles.buttonText}>Share</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -62,6 +88,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F4F8',
     padding: 20,
     alignItems: 'center',
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+  },
+  backText: {
+    fontSize: 16,
+    color: '#0EA5E9',
+    fontWeight: '600',
   },
   card: {
     backgroundColor: '#fff',
@@ -88,15 +123,27 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: '#333',
-    marginBottom: 25,
+    marginBottom: 20,
   },
-  rsvpButton: {
+  map: {
+    width: '100%',
+    height: 200,
+    borderRadius: 15,
+    marginBottom: 20,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    flex: 1,
     backgroundColor: '#0EA5E9',
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
+    marginHorizontal: 5,
   },
-  rsvpText: {
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
     fontSize: 16,
