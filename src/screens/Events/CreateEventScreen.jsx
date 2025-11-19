@@ -2,16 +2,20 @@ import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Alert, Keyboard, TouchableWithoutFeedback,
-  Platform, ScrollView
+  Platform
 } from 'react-native';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firebaseDb } from '../../../config/firebase';
 
 export default function CreateEventScreen({ navigation }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+    const [loading, setLoading] = useState(false); 
+
 
   const [city, setCity] = useState(null);
   const [openCity, setOpenCity] = useState(false);
@@ -31,37 +35,64 @@ export default function CreateEventScreen({ navigation }) {
     if (selectedDate) setDate(selectedDate);
   };
 
-  const handleSubmit = async () => {
-    if (!title || !description || !city) {
-      Alert.alert('Please fill in all fields');
+
+const handleSubmit = async () => {
+
+  if (!title || !description || !city) {
+    console.log('Validation failed:', { title, description, city });
+    Alert.alert('Validation Error', 'Please fill in all fields');
+    return;
+  }
+  console.log('Validation passed:', { title, description, city, date });
+
+  try {
+    setLoading(true);
+
+    if (!firebaseDb) {
+      Alert.alert('Error', 'Firestore not initialized properly.');
       return;
     }
 
-    try {
-      await addDoc(collection(firebaseDb, 'events'), {
-        title,
-        city,
-        date: date.toISOString(),
-        description,
-        createdAt: serverTimestamp(),
-      });
+    const docRef = await addDoc(collection(firebaseDb, 'events'), {
+      title,
+      city,
+      date: date.toISOString(),
+      description,
+      createdAt: serverTimestamp(),
+    });
 
-      Alert.alert('Event created successfully!');
-      setTitle('');
-      setDescription('');
-      setCity(null);
-      navigation.navigate('Events', { refresh: true });
+    Alert.alert('Success', 'Event created successfully!', [
+      {
+        text: 'OK',
+        onPress: () => {
+          console.log('Clearing form and navigating to Events');
+          setTitle('');
+          setDescription('');
+          setCity(null);
+          navigation.navigate('Events', { refresh: true });
+        },
+      },
+    ]);
+  } catch (error) {
+    console.error('Firestore addDoc failed:', error);
+    if (error.message) console.log('Error message:', error.message);
+    Alert.alert(
+      'Error',
+      'Failed to create event. Check console logs for details.'
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
-    } catch (error) {
-      console.error('Error creating event:', error);
-      Alert.alert('Error', 'Failed to create event.');
-    }
-  };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>Create New Event</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
+      >
+        <View style={styles.header}>
+        <Text style={styles.headerTitle}>Create New Event</Text>
+      </View>
 
         <View style={styles.formCard}>
           <Text style={styles.label}>Event Title</Text>
@@ -119,7 +150,7 @@ export default function CreateEventScreen({ navigation }) {
             <Text style={styles.submitText}>Create Event</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
@@ -132,20 +163,33 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   header: {
+    backgroundColor: '#1E293B',
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  headerTitle: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 20,
+    color: '#fff',
+    textAlign: 'center',
+    paddingBottom: 10,
   },
   formCard: {
+    marginTop: -40,
     backgroundColor: '#fff',
+    width: '90%',
+    alignSelf: 'center',
+    paddingVertical: 30,
+    paddingHorizontal: 20,
     borderRadius: 25,
-    padding: 25,
-    elevation: 6,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 5 },
+    elevation: 6,
   },
   label: {
     fontSize: 14,

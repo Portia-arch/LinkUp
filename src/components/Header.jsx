@@ -46,29 +46,37 @@ export default function AppHeader({ showProfile = true }) {
     callback();
   };
 
-  const handleLogout = () => {
-    if (!user) {
-      Alert.alert('Not logged in', 'You are not logged in.');
-      return;
-    }
+ const handleLogout = () => {
+  if (!user) {
+    Alert.alert('Not logged in', 'You are not logged in.');
+    return;
+  }
 
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: () => {
-            logout();
-            setMenuVisible(false);
-            navigation.navigate('LogIn');
-          },
+  Alert.alert(
+    'Logout',
+    'Are you sure you want to logout?',
+    [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: () => {
+          logout(); // your logout function from context
+          setMenuVisible(false);
+
+          // Safe navigation with exact screen name
+          try {
+            navigation.navigate('LogIn'); // match your Stack.Screen name exactly
+          } catch (err) {
+            console.error('Navigation error:', err);
+            Alert.alert('Error', 'Unable to navigate to login screen.');
+          }
         },
-      ]
-    );
-  };
+      },
+    ]
+  );
+};
+
 
   const slideStyle = {
     transform: [
